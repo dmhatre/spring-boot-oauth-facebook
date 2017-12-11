@@ -1,0 +1,2 @@
+deploy:
+  artifact: target/application.jar

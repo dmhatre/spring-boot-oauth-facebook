@@ -1,0 +1,67 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta http-equiv="cache-control" content="max-age=0" />
+	<meta http-equiv="cache-control" content="no-cache" />
+	<meta http-equiv="expires" content="0" />
+	<meta http-equiv="pragma" content="no-cache" />
+    <title>Demo</title>
+    <meta name="description" content=""/>
+    <meta name="viewport" content="width=device-width"/>
+    <base th:href="@{/}"/>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+</head>
+<body>
+	<h1>Demo</h1>
+	<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+	<div class="container"></div>
+	<div class="container unauthenticated">
+    With Facebook: <a th:href="@{/login}">click here</a>
+	</div>
+	<div class="container authenticated" style="display:none">
+    Logged in as: <span id="user"></span>
+    <button th:onClick="'logout()'" class="btn btn-primary">logout</button>
+	</div>
+	<script>
+	var accessToken = ''; 
+	$.get("/user",function(data){
+		var test = 'new';
+		console.log(data);
+		try {
+			if(data != null) {
+				test = data.userAuthentication.details.name;
+			} 
+		} catch(err) {
+			console.log(err);
+		}
+		console.log('##--'+test+'--##');
+		if(test != 'new') {
+			$('#user').html(data.userAuthentication.details.name);
+			accessToken = data.details.tokenValue;
+			$('.unauthenticated').hide();
+			$('.authenticated').show();
+		} else {
+			$('.unauthenticated').show();
+			$('.authenticated').hide();
+		}
+		
+	}).fail(function(){
+		$('.unauthenticated').show();
+		$('.authenticated').hide();
+	})
+	var logout = function () {
+	
+		$.post('/logout',function(){
+			$('#user').html('');
+			$('.unauthenticated').show();
+			$('.authenticated').hide();
+		});
+		return true;
+	}
+	</script>
+</body>
+</html>

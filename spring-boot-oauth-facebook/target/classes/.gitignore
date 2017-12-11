@@ -1,0 +1,6 @@
+/.elasticbeanstalk/
+/Procfile
+/application.properties
+/spring/
+/static/
+/templates/
